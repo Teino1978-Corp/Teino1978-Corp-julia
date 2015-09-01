@@ -3295,3 +3295,12 @@ code_typed(A12612.f2, Tuple{})
 # issue #12826
 f12826{I<:Integer}(v::Vector{I}) = v[1]
 @test Base.return_types(f12826,Tuple{Array{TypeVar(:I, Integer),1}})[1] == Integer
+
+# PR 11888
+immutable A11888{T}
+    a::NTuple{16,T}
+end
+
+typealias B11888{T} A11888{A11888{A11888{T}}}
+
+@test sizeof(B11888{B11888{Int64}}) == (1 << 24) * 8
